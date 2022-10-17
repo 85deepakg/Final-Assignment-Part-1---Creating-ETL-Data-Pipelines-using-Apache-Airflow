@@ -37,15 +37,15 @@ dag = DAG(
 
 # Task 1.3 - Create a task to unzip data
 
-extract = BashOperator(
+unzip_data = BashOperator(
     task_id='unzip_data',
-    bash_command='sudo t​ar zxvf /home/project/tolldata.tgz -C /home/project/airflow/dags/finalassignment/staging',
+    bash_command='wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz | tar -xzf tolldata.tgz',
     dag=dag,
 )
 
 # Task 1.4 - Create a task to extract data from csv file
 
-extract = BashOperator(
+extract_data_from_csv = BashOperator(
     task_id='extract_data_from_csv',
     bash_command='cut -d"," -f1-4 vehicle-data.csv > csv_data.csv',
     dag=dag,
@@ -53,7 +53,7 @@ extract = BashOperator(
 
 # Task 1.5 - Create a task to extract data from tsv file
 
-extract = BashOperator(
+extract_data_from_tsv = BashOperator(
     task_id='extract_data_from_tsv',
     bash_command='cut -f5-7 tollplaza-data.tsv | tr "\\t" "," > tsv_data.csv',
     dag=dag,
@@ -61,7 +61,7 @@ extract = BashOperator(
 
 # Task 1.6 - Create a task to extract data from fixed width file
 
-extract = BashOperator(
+extract_data_from_fixed_width = BashOperator(
     task_id='extract_data_from_fixed_width',
     bash_command='cut -c 59-61,63-68 payment-data.txt | tr " " "," > fixed_width_data.csv',
     dag=dag,
@@ -69,7 +69,7 @@ extract = BashOperator(
 
 # Task 1.7 - Create a task to consolidate data extracted from previous tasks
 
-extract = BashOperator(
+consolidate_data = BashOperator(
     task_id='consolidate_data',
     bash_command='cd /home/project/airflow/dags/finalassignment | paste -d "," csv_data.csv tsv_data.csv fixed_width_data.csv > extracted_data.csv',
     dag=dag,
@@ -78,7 +78,7 @@ extract = BashOperator(
 # define the task 'transform'
 # Task 1.8 - Transform and load the data
 
-transform = BashOperator(
+transform_data = BashOperator(
     task_id='transform_data',
     bash_command='tr "[a-z]" "[A-Z]" < extracted_data.csv > transformed_data.csv',
     dag=dag,
