@@ -8,7 +8,6 @@ from airflow.operators.bash_operator import BashOperator
 # This makes scheduling easy
 from airflow.utils.dates import days_ago
 
-
 #defining DAG arguments
 
 # You can override them on a per-task basis during operator initialization
@@ -39,7 +38,7 @@ dag = DAG(
 
 unzip_data = BashOperator(
     task_id='unzip_data',
-    bash_command='wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz | tar -xzf tolldata.tgz',
+    bash_command='sudo tar -zxvf tolldata.tgz',
     dag=dag,
 )
 
@@ -47,7 +46,7 @@ unzip_data = BashOperator(
 
 extract_data_from_csv = BashOperator(
     task_id='extract_data_from_csv',
-    bash_command='cut -d"," -f1-4 vehicle-data.csv > csv_data.csv',
+    bash_command='sudo cut -d"," -f1-4 vehicle-data.csv > csv_data.csv',
     dag=dag,
 )
 
@@ -55,7 +54,7 @@ extract_data_from_csv = BashOperator(
 
 extract_data_from_tsv = BashOperator(
     task_id='extract_data_from_tsv',
-    bash_command='cut -f5-7 tollplaza-data.tsv | tr "\\t" "," > tsv_data.csv',
+    bash_command='sudo cut -f5-7 tollplaza-data.tsv | tr "\\t" "," > tsv_data.csv',
     dag=dag,
 )
 
@@ -63,7 +62,7 @@ extract_data_from_tsv = BashOperator(
 
 extract_data_from_fixed_width = BashOperator(
     task_id='extract_data_from_fixed_width',
-    bash_command='cut -c 59-61,63-68 payment-data.txt | tr " " "," > fixed_width_data.csv',
+    bash_command='sudo cut -c 59-61,63-68 payment-data.txt | tr " " "," > fixed_width_data.csv',
     dag=dag,
 )
 
@@ -71,7 +70,7 @@ extract_data_from_fixed_width = BashOperator(
 
 consolidate_data = BashOperator(
     task_id='consolidate_data',
-    bash_command='cd /home/project/airflow/dags/finalassignment | paste -d "," csv_data.csv tsv_data.csv fixed_width_data.csv > extracted_data.csv',
+    bash_command='sudo paste -d "," csv_data.csv tsv_data.csv fixed_width_data.csv > extracted_data.csv',
     dag=dag,
 )
 
@@ -80,7 +79,7 @@ consolidate_data = BashOperator(
 
 transform_data = BashOperator(
     task_id='transform_data',
-    bash_command='tr "[a-z]" "[A-Z]" < extracted_data.csv > transformed_data.csv',
+    bash_command='sudo tr "[a-z]" "[A-Z]" < extracted_data.csv > transformed_data.csv',
     dag=dag,
 )
 
